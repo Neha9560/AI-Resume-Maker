@@ -1,17 +1,17 @@
- import streamlit as st 
- # streamilt: web based app making
- # lite python framework
+import streamlit as st
+# streamlit: Web based app making
+# lite python framework
 
- st.title("AI Resume Maker")
+st.title("AI Resume Maker")
 
-st.markdown("""## User can create or 
+st.markdown("""## User can create or
 download AI created Resume based on high ATS
-score""")
+Score""")
 
 
-#=================AGENT CODE==================
+#==================AGENT CODE===================
 # Step 2: Load Modules
-import IPython as ip
+
 import os
 import time
 import langchain
@@ -26,91 +26,89 @@ import streamlit as st
 from langchain_community.document_loaders import PyMuPDFLoader
 
 
-# ===============API KEY LOAD====================
-
+# ================API KEY LOAD===================
 
 GOOGLE_API_KEY = st.sidebar.text_input("GOOGLE_API_KEY",type="password")
 GROQ_API_KEY = st.sidebar.text_input("GROQ_API_KEY",type="password")
 TAVILY_API_KEY = st.sidebar.text_input("TAVILY_API_KEY",type="password")
 
-#====================MODEL BUILDING========================
+
+# ===============MODEL BUILDING=============
 model = ChatGoogleGenerativeAI(
     model = 'gemini-3.5-flash-lite',
     google_api_key = GOOGLE_API_KEY
 )
 
-# tools
+# tool
 def search_recent_news_jobs(query):
   """This function helps to search
   recent news or recent jobs
   related to given search query
-  suppose user with python Developer jobs
+  suppose user write Python Developer jobs
   It should return trending news and jobs link"""
   client = TavilyClient(
       api_key = TAVILY_API_KEY
       )
   return client.search(query)
 
-# agent ceartion
+
+
+# agent creation
 from langchain.agents import create_agent
 
 agent = create_agent(
     model = model,
     tools = [search_recent_news_jobs]
 )
-  
 
-#==========PROMPT GENERATOR================
-def prompt_generator(agent):
-  """This funcation help to give detailed prompt
-  followed by chain of thoughts and
-  person based prompting, main task is to give
+
+# ==== PROMPT GENERATOR================
+def prompt_generator(agent = agent):
+  """This function help to give detailed prompt
+  followed by Chain of thoughts and
+  persona based prompting, main task is to give
   detailed prompt to build Resume for
   Students or Experienced person
   Based on their given personal information.
   """
 
-  prompt = """You a senior HR resume analyzer,
+  prompt = """You are a senior HR resume analyzer,
   main task is to give
   detailed prompt to build Resume for
   Students or Experienced person
   Based on their given personal information.
   System Instruction I want Model to generate resume
-  in HTML format, include that in prompt"""
+  in HTML format , include that in prompt"""
 
   response = agent.invoke(prompt)
   file_name = 'prompt.py'
   with open(file_name, 'w') as f:
     f.write(response.content[-1]['text'])
-  return "Prompt file generated sucessfully, agent can read it"
+  return "Prompt file generated Successfully, agent can read it"
 
-
+prompt_generator(model)
 # tool 2:
 def resume_maker_prompt():
-  """This funcation just gives
+  """This function just gives
   updated prompt for model"""
 
   with open('prompt.py', 'r') as f:
     prompt = f.read()
   return prompt
 
-# ================GENERATE RESUME================
-
-prompt = """You are a heplful AI assistant
+resume_maker_prompt()
+# ===========GENERATE RESUME========
+prompt = """You are a helpful AI assistant
 with job resume maker, your task is to give
-HTML format resume, with proper designing using recent CSS and js
-code, with professional design format.
-user will upload data and resturn HTML format resume
-always use differnt color or styling"""
+HTML format resume, with proper designing using recent CSS and JS
+code, with professional design Format.
+User will upload data and return HTML format resume
+always use different color or styling"""
 
-final_prompt =prompt + resume_maker_prompt()
+final_prompt = prompt + resume_maker_prompt()
 
 user_details = """user details: given below:
-Given python Developer Resume
-Neha Thakur
-9870357528
-nt2094443@gmail.com
-skills : HTML,CSS,C SQL,JavaScript"""
+Give Python Developer Resume"""
 
 query = final_prompt + user_details
 
@@ -120,7 +118,8 @@ if st.button("Generate Resume"):
     response = agent.invoke({'messages':[{'role':'user','content':query}]})
     code = response['messages'][-1].content[-1]['text']
 
-    st.markdown(code)
+    #st.markdown(code)
+    st.html(code, width="stretch", unsafe_allow_javascript=True)
 
 
 
