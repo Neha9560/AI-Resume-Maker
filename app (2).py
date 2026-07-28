@@ -30,7 +30,7 @@ else:
 model=ChatGoogleGenerativeAI(
     google_api_key=GOOGLE,
     model='gemini-3.5-flash-lite',
-    temperature=1
+    
 )
 def search_jobs(query):
   """this function helps to find recent news or recent jobs related to given search query suppose user to write a python develpoer or should return trending news and job links """
