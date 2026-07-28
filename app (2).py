@@ -115,7 +115,7 @@ import base64
 
 
 OPTIONS = ["DELHI", "NOIDA", "GURAGAON/GURUGRAM"
-           'KANPUR', 'LUCKNOW', 'BANGLORE', 'PUNE]
+           'KANPUR', 'LUCKNOW', 'BANGLORE', 'PUNE']
 
 LOCATION = st.sidebar.multiselect('SELECT LOCATION:',
                                     options = OPTIONS 
