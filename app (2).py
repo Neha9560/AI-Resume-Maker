@@ -138,7 +138,7 @@ if st.button('generate resume'):
   with st.spinner("runnign agent"):
 
     response = agent.invoke({'messages': [{'role':'user','content':query}]})
-    print(response['messages'][-1].content)
+   
     code=response['messages'][-1].content[-1]['text']
 
     # swap in the actual uploaded photo instead of the placeholder tag
