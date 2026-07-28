@@ -135,7 +135,7 @@ job name, jobs desc, salary,
 apply link and OUTPUT must be in HTML no markdowns"""
 
 if st.button('generate resume'):
-  with st.spinner("runnign agent"):
+  with st.spinner("runing agent"):
 
     response = agent.invoke({'messages': [{'role':'user','content':query}]})
    
